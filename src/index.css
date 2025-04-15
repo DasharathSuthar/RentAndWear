@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .container{
+        @apply w-4/5 mx-auto px-3;
+    }
+    .row{
+        @apply flex justify-between items-center flex-wrap;
+    }
+    .active{
+        @apply text-gray-800 !important;
+    }   
+}
+
+body{
+    font-family: serif;
+}
+
+.banner{
+    background-image: url(./assets/img/home-2.png);
+    background-color: rgba(128, 128, 128, 0.10);
+    background-size: cover;
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.team-section{
+    background-image: url("./assets/img/pattern.png");
+}
+
+.list:hover .submenu{
+    display: block;
+}
