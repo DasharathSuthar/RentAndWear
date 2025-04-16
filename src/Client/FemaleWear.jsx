@@ -5,55 +5,60 @@ import ItemCard from "../Components/ItemCard";
 import PageTitle from "../Components/PageTitle";
 import axios from "axios";
 
-
-
 export default function FemaleWear() {
-
     const URL = "http://localhost:8080/FemaleWear/";
-    const [femaleData, setFemaleData] = useState([])
+    const [femaleData, setFemaleData] = useState([]);
+
+    // Function to fetch Female Wear data
     function FemaleWearData() {
         axios
             .get(URL)
             .then((response) => {
                 if (response.status === 200) {
-                    var data = response.data.List;
+                    const data = response.data.List;
                     setFemaleData(data);
-                    console.log(data);
+                    console.log(data); // For debugging purposes
                 }
-
             })
             .catch((err) => {
-                console.error(err);
+                console.error("Error fetching data:", err);
             });
     }
 
     useEffect(() => {
-        FemaleWearData();
+        FemaleWearData();  // Fetch Female Wear data on component mount
     }, []);
+
     return (
         <>
             <Header />
             <PageTitle title={"Female Cloth & Shoe List"} text={"Style that defines you."} />
+            
             <section className="cloth-list py-16">
-                <div className="container">
-                    <div className="row ">
-                        {(femaleData || []).map((item, index) => (
-                            <div className="card px-2 my-2" key={index}>
-                                <div className="card-body rounded-lg shadow-lg  text-center row flex-row justify-start">
-                                    <ItemCard
-                                        key={index}
-                                        title={item.title}
-                                        itemImg={item.image}
-                                        price={item.price}
-                                        category={item.category}
-                                        subcategory={item.subcategory}
-                                        size={item.size}
-                                        description={item.description}
-                                        status={item.status}
-                                    />
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                        {(femaleData || []).map((item, index) => {
+                            // Ensure sizes are handled as an array
+                            const sizes = Array.isArray(item.sizes) ? item.sizes : [item.size]; // Fallback if sizes is not an array
+
+                            return (
+                                <div className="card px-2 my-2" key={index}>
+                                    <div className="card-body rounded-lg shadow-lg text-center flex justify-start">
+                                        <ItemCard
+                                            key={index}
+                                            title={item.title}
+                                            itemImg={item.image}
+                                            price={item.price}
+                                            category={item.category}
+                                            subcategory={item.subcategory}
+                                            sizes={sizes}  // Pass sizes array
+                                            description={item.description}
+                                            status={item.status}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </section>

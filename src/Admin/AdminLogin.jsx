@@ -13,11 +13,13 @@ const AdminLogin = () => {
 
     if (username === "admin" && password === "admin") {
       setError("");
-      navigate("/admin/dashboard"); // Redirect to dashboard on success
+      localStorage.setItem("adminLoggedIn", "true");  // <--- set admin flag
+      navigate("/admin/dashboard");  // Redirect to dashboard on success
     } else {
       setError("Invalid username or password");
     }
   };
+
 
   return (
     <div className="flex items-center justify-center h-screen bg-gradient-to-br from-blue-500 to-blue-300">

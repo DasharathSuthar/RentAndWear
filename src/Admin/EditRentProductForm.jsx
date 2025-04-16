@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -16,9 +16,21 @@ function EditRentProductForm() {
         setFormData({ ...formData, [name]: value });
     };
 
+    // Handle size input changes
+    const handleSizeChange = (e) => {
+        const { value } = e.target;
+        // If value contains commas, split it into an array
+        const sizeArray = value.split(',').map(size => size.trim());
+        setFormData({ ...formData, size: sizeArray });
+    };
+
     // Submit updated product
     const handleSave = async () => {
         try {
+            // Handle size as either array or single value
+            if (Array.isArray(formData.size)) {
+                formData.size = formData.size.join(', '); // Convert array to string
+            }
             await axios.put(`http://localhost:8080/${DBpath}/${formData._id}`, formData);
             alert("Product updated successfully!");
             navigate(`/admin/${path}`);
@@ -27,6 +39,13 @@ function EditRentProductForm() {
             alert("Failed to update product");
         }
     };
+
+    // Effect to handle single or array size data format
+    useEffect(() => {
+        if (Array.isArray(formData.size)) {
+            setFormData({ ...formData, size: formData.size.join(', ') });
+        }
+    }, [formData.size]);
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -60,9 +79,9 @@ function EditRentProductForm() {
                     <input
                         type="text"
                         name="size"
-                        placeholder="Size"
-                        value={formData.size}
-                        onChange={handleChange}
+                        placeholder="Size (comma separated if multiple)"
+                        value={formData.sizes}
+                        onChange={handleSizeChange}
                         className="w-full p-2 border rounded"
                     />
                     <input

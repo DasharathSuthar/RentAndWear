@@ -8,6 +8,7 @@ export default function Header() {
     const navigate = useNavigate();
     const [cartCount, setCartCount] = useState(0);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [username, setUsername] = useState("");
 
     // Check login state on component mount
     useEffect(() => {
@@ -22,18 +23,25 @@ export default function Header() {
         };
     }, []);
 
-    // Function to check if user is logged in
+    // Function to check if user is logged in and get username
     const checkLoginStatus = () => {
-        const user = localStorage.getItem("user");
-        setIsLoggedIn(user !== null);
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user) {
+            setIsLoggedIn(true);
+            setUsername(user.username);  // Assuming user object has a 'name' property
+        } else {
+            setIsLoggedIn(false);
+            setUsername("");
+        }
     };
 
     // Logout function
     const handleLogout = () => {
         localStorage.removeItem("user");
-        localStorage.removeItem("token"); // Remove token as well
+        localStorage.removeItem("token");
         alert("Logged out successfully!");
         setIsLoggedIn(false);
+        setUsername("");
         navigate("/");
         window.dispatchEvent(new Event("storage")); // Notify other components of logout
     };
@@ -43,10 +51,10 @@ export default function Header() {
             <div className="container flex justify-between items-center">
                 {/* Logo */}
                 <div className="font-bold text-2xl text-black">
-                   <Link to="/">
-                   <h1 className="uppercase">
-                        <span className="text-red-600">Rent</span> &amp; <span className="text-black">Wear</span>
-                    </h1>
+                    <Link to="/">
+                        <h1 className="uppercase">
+                            <span className="text-red-600">Rent</span> &amp; <span className="text-black">Wear</span>
+                        </h1>
                     </Link>
                 </div>
 
@@ -87,19 +95,42 @@ export default function Header() {
 
                 {/* Auth Buttons */}
                 <div>
-                    <ul className="flex space-x-4">
+                    <ul className="flex space-x-4 items-center">
                         {isLoggedIn ? (
-                            <li>
-                                <button onClick={handleLogout} className="bg-black text-white px-4 py-2 rounded-md hover:bg-red-600 transition">
-                                    Logout
-                                </button>
-                            </li>
+                            <>
+                                <li className="flex items-center space-x-2 px-3 py-2 bg-gray-100 rounded-full shadow-sm">
+                                    <span className="text-sm font-semibold text-gray-800">Welcome {username}</span>
+                                </li>
+                                <li>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="bg-black text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+                                    >
+                                        Logout
+                                    </button>
+                                </li>
+                            </>
                         ) : (
                             <>
-                                <li><Link className="border border-black text-black px-4 py-2 rounded-md hover:bg-red-600 hover:text-white transition" to="/SignUpForm">Sign Up</Link></li>
-                                <li><Link className="border border-black bg-black text-white px-4 py-2 rounded-md hover:bg-red-600 transition" to="/Login">Log In</Link></li>
+                                <li>
+                                    <Link
+                                        className="border border-black text-black px-4 py-2 rounded-md hover:bg-red-600 hover:text-white transition"
+                                        to="/SignUpForm"
+                                    >
+                                        Sign Up
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        className="border border-black bg-black text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+                                        to="/Login"
+                                    >
+                                        Log In
+                                    </Link>
+                                </li>
                             </>
                         )}
+
                     </ul>
                 </div>
             </div>

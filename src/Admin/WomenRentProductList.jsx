@@ -7,6 +7,7 @@ const WomenRentProductList = () => {
   const navigate = useNavigate();
   const [femaleData, setFemaleData] = useState([]);
 
+  // Fetch data for female wear products
   function FemaleWearData() {
     axios
       .get(URL)
@@ -25,19 +26,22 @@ const WomenRentProductList = () => {
     FemaleWearData();
   }, []);
 
+  // Handle Edit
   async function handleEdit(Id) {
     await axios
       .get(URL + `${Id}`)
       .then((response) => {
         if (response.status === 200) {
           const data = response.data.ByIdData;
-          navigate("/admin/editProductForm", { state: { productData: data, DBpath : "FemaleWear", path:"womenrentproduct" } });
+          navigate("/admin/editProductForm", { state: { productData: data, DBpath: "FemaleWear", path: "womenrentproduct" } });
         }
       })
       .catch((err) => {
         console.log(err);
       });
   }
+
+  // Handle Delete
   async function handleDelete(Id) {
     await axios
       .delete(URL + `${Id}`)
@@ -52,7 +56,7 @@ const WomenRentProductList = () => {
         alert("Failed to delete product.");
       });
   }
-  
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4">
@@ -71,7 +75,6 @@ const WomenRentProductList = () => {
               <th className="p-2">Price</th>
               <th className="p-2">Description</th>
               <th className="p-2">Image</th>
-              
               <th className="p-2">Edit</th>
               <th className="p-2">Delete</th>
             </tr>
@@ -83,20 +86,25 @@ const WomenRentProductList = () => {
                 <td className="p-2">{product.title}</td>
                 <td className="p-2">{product.category}</td>
                 <td className="p-2">{product.subcategory}</td>
-                <td className="p-2">{product.size}</td>
+                <td className="p-2">
+                  {/* Display Sizes */}
+                  {Array.isArray(product.sizes)
+                    ? product.sizes.join(', ') // If it's an array
+                    : product.sizes // If it's a single value
+                  }
+                </td>
                 <td className="p-2">₹{product.price}</td>
                 <td className="p-2">{product.description}</td>
                 <td className="p-2">
                   <img src={product.image} alt={product.title} className="w-10 h-10 rounded" />
                 </td>
-                
                 <td className="p-2">
                   <input
                     type="button"
                     value="Edit"
                     onClick={() => handleEdit(product._id)}
                     className="py-2 px-3 cursor-pointer bg-blue-500 text-white hover:bg-blue-700 border border-blue-600 rounded-md"
-                    />
+                  />
                 </td>
                 <td className="p-2">
                   <input

@@ -9,9 +9,11 @@ export default function SingleProduct() {
     const navigate = useNavigate();
     
     // Extract product details from location state
-    const { title, itemImg, price, category, subcategory, size, description, status } = location.state || {};
+    const { title, itemImg, price, category, subcategory, sizes, description, status } = location.state || {};
+
 
     const [cart, setCart] = useState([]);
+    const [selectedSize, setSelectedSize] = useState(sizes ? sizes[0] : "");
 
     // Check if user is logged in
     const isAuthenticated = () => {
@@ -31,7 +33,7 @@ export default function SingleProduct() {
             return;
         }
 
-        const newItem = { title, itemImg, price, category, subcategory, size, description, status };
+        const newItem = { title, itemImg, price, category, subcategory, size: selectedSize, description, status };
         const updatedCart = [...cart, newItem];
 
         setCart(updatedCart);
@@ -46,12 +48,11 @@ export default function SingleProduct() {
             return;
         }
 
-        const newItem = { title, itemImg, price, category, subcategory, size, description, status };
+        const newItem = { title, itemImg, price, category, subcategory, size: selectedSize, description, status };
 
-        // Check if the current product is already in the cart
-        const isAlreadyInCart = cart.some(item => item.title === newItem.title);
+        // Check if the current product is already in the cart (same title + size)
+        const isAlreadyInCart = cart.some(item => item.title === newItem.title && item.size === newItem.size);
 
-        // Combine cart items + current product (if not already in cart)
         const updatedItems = isAlreadyInCart ? [...cart] : [...cart, newItem];
 
         // Navigate to checkout with combined items
@@ -92,8 +93,22 @@ export default function SingleProduct() {
                             <div className="mt-4">
                                 <p><strong>Category:</strong> {category}</p>
                                 <p><strong>Subcategory:</strong> {subcategory}</p>
-                                <p><strong>Size:</strong> {size}</p>
                                 <p><strong>Description:</strong> {description}</p>
+
+                                {/* Size Selector */}
+                                <div className="mt-3">
+                                    <label htmlFor="size" className="block font-semibold">Select Size:</label>
+                                    <select
+                                        id="size"
+                                        value={selectedSize}
+                                        onChange={(e) => setSelectedSize(e.target.value)}
+                                        className="mt-1 p-2 rounded text-black"
+                                    >
+                                        {sizes && sizes.map((sizeOption, idx) => (
+                                            <option key={idx} value={sizeOption}>{sizeOption}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             {/* Buttons for Cart & Rent Now */}

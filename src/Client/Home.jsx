@@ -5,46 +5,43 @@ import ItemCard from "../Components/ItemCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-
 export default function Home() {
     const URL = "http://localhost:8080";
-    const [maleData, setMaleData] = useState([])
-    const [femaleData, setFemaleData] = useState([])
+    const [maleData, setMaleData] = useState([]);
+    const [femaleData, setFemaleData] = useState([]);
 
     function MaleWearData() {
         axios
             .get(`${URL}/MaleWear/`)
             .then((response) => {
                 if (response.status === 200) {
-                    var data = response.data.List;
+                    const data = response.data.List;
                     setMaleData(data);
                 }
-
             })
             .catch((err) => {
                 console.error(err);
             });
     }
+
     function FemaleWearData() {
         axios
             .get(`${URL}/FemaleWear/`)
             .then((response) => {
                 if (response.status === 200) {
-                    var data = response.data.List;
+                    const data = response.data.List;
                     setFemaleData(data);
                 }
-
             })
             .catch((err) => {
                 console.error(err);
             });
     }
+
     useEffect(() => {
         MaleWearData();
         FemaleWearData();
     }, []);
-
-
 
     return (
         <>
@@ -56,7 +53,9 @@ export default function Home() {
                     {/* Section Heading */}
                     <div className="text-center mb-10">
                         <h2 className="font-bold text-4xl text-red-600">Explore Good Clothes</h2>
-                        <p className="text-black mt-2 text-lg">Every day is a fashion show, and the world is your runway.</p>
+                        <p className="text-black mt-2 text-lg">
+                            Every day is a fashion show, and the world is your runway.
+                        </p>
                     </div>
 
                     {/* Products Grid */}
@@ -69,7 +68,7 @@ export default function Home() {
                                 price={item.price}
                                 category={item.category}
                                 subcategory={item.subcategory}
-                                size={item.size}
+                                sizes={item.sizes || [item.sizes]} // use item.sizes if available, fallback to [item.size]
                                 description={item.description}
                                 status={item.status}
                             />
@@ -82,7 +81,7 @@ export default function Home() {
                                 price={item.price}
                                 category={item.category}
                                 subcategory={item.subcategory}
-                                size={item.size}
+                                sizes={item.sizes || [item.size]} // same handling here
                                 description={item.description}
                                 status={item.status}
                             />

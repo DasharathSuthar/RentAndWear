@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 
-export default function ItemCard({ title, itemImg, price, category, subcategory, size, description, status }) {
+export default function ItemCard({ title, itemImg, price, category, subcategory, sizes, description, status }) {
     const navigate = useNavigate();
 
     const handleViewClick = () => {
         navigate("/SingleProduct", {
-            state: { title, itemImg, price, category, subcategory, size, description, status }
+            state: { title, itemImg, price, category, subcategory, sizes, description, status }
         });
     };
 
@@ -20,7 +20,10 @@ export default function ItemCard({ title, itemImg, price, category, subcategory,
             <div className="mt-3">
                 <h3 className="text-xl font-bold text-black capitalize">{title}</h3>
                 <p className="text-gray-700 text-sm">{category} - {subcategory}</p>
-                <p className="text-gray-600 text-sm mt-1"><strong>Size:</strong> {size}</p>
+                <p className="text-gray-600 text-sm mt-1">
+                <p><strong>Sizes:</strong> {sizes.join(", ")}</p>
+
+                </p>
                 <p className="text-black font-bold mt-2">₹{price} / Day</p>
             </div>
 

@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 
 const MenRentProductList = () => {
   const URL = "http://localhost:8080/MaleWear/";
-  const navigate = useNavigate()
-  const [maleData, setMaleData] = useState([])
+  const navigate = useNavigate();
+  const [maleData, setMaleData] = useState([]);
+
+  // Fetch data for male wear products
   async function MaleWearData() {
     await axios
       .get(URL)
@@ -13,8 +15,8 @@ const MenRentProductList = () => {
         if (response.status === 200) {
           var data = response.data.List;
           setMaleData(data);
+         
         }
-
       })
       .catch((err) => {
         console.error(err);
@@ -25,6 +27,7 @@ const MenRentProductList = () => {
     MaleWearData();
   }, []);
 
+  // Handle Edit
   async function handleEdit(Id) {
     await axios
       .get(URL + `${Id}`)
@@ -39,6 +42,7 @@ const MenRentProductList = () => {
       });
   }
 
+  // Handle Delete
   async function handleDelete(Id) {
     await axios
       .delete(URL + `${Id}`)
@@ -53,7 +57,6 @@ const MenRentProductList = () => {
         alert("Failed to delete product.");
       });
   }
-  
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -84,14 +87,35 @@ const MenRentProductList = () => {
                 <td className="p-2">{product.title}</td>
                 <td className="p-2">{product.category}</td>
                 <td className="p-2">{product.subcategory}</td>
-                <td className="p-2">{product.size}</td>
+                {/* Display Sizes */}
+                <td className="p-2">
+                  {/* Assuming size is an array or single value */}
+                  {Array.isArray(product.sizes) 
+                    ? product.sizes.join(', ') // If it's an array
+                    : product.sizes // If it's a single value
+                  }
+                </td>
                 <td className="p-2">₹{product.price}</td>
                 <td className="p-2">{product.description}</td>
                 <td className="p-2">
                   <img src={product.image} alt={product.title} className="w-10 h-10 rounded" />
                 </td>
-                <td className="p-2"><input type="button" value={"Edit"} onClick={() => handleEdit(product._id)} className="py-2 px-3 cursor-pointer bg-blue-500 text-white hover:bg-blue-700 border border-blue-600 rounded-md" /></td>
-                <td className="p-2"><input type="button" value={"Delete"} onClick={() => handleDelete(product._id)} className="py-2 px-3 cursor-pointer bg-red-500 text-white hover:bg-red-700 border border-red-600 rounded-md" /></td>
+                <td className="p-2">
+                  <input
+                    type="button"
+                    value={"Edit"}
+                    onClick={() => handleEdit(product._id)}
+                    className="py-2 px-3 cursor-pointer bg-blue-500 text-white hover:bg-blue-700 border border-blue-600 rounded-md"
+                  />
+                </td>
+                <td className="p-2">
+                  <input
+                    type="button"
+                    value={"Delete"}
+                    onClick={() => handleDelete(product._id)}
+                    className="py-2 px-3 cursor-pointer bg-red-500 text-white hover:bg-red-700 border border-red-600 rounded-md"
+                  />
+                </td>
               </tr>
             ))}
           </tbody>

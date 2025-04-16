@@ -23,6 +23,7 @@ import Checkout from './Client/Checkout'
 import OrderConfirmation from './Client/OrderConfirmation'
 import AdminContact from './Admin/AdminContact'
 import EditRentProductForm from './Admin/EditRentProductForm'
+import RequireAdminAuth from './Admin/AdminAuth'
 
 
 
@@ -45,16 +46,19 @@ function App() {
 
           <Route path='/AdminLogin' element={<AdminLogin></AdminLogin>}></Route>
 
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route path="dashboard" element={<Dashboard></Dashboard>} />
-            <Route path="bookings" element={<BookingList />} />
-            <Route path="menrentproduct" element={<MenRentProductList></MenRentProductList>} />
-            <Route path="womenrentproduct" element={<WomenRentProductList></WomenRentProductList>} />
-            <Route path="category" element={<CategoryList></CategoryList>} />
-            <Route path="subcategory" element={<SubCategoryList></SubCategoryList>} />
-            <Route path="adminContact" element={<AdminContact></AdminContact>} />
-            <Route path="editProductForm" element={<EditRentProductForm></EditRentProductForm>} />
+          <Route path="/admin" element={<RequireAdminAuth />}>
+            <Route element={<AdminLayout />}>
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="bookings" element={<BookingList />} />
+              <Route path="menrentproduct" element={<MenRentProductList />} />
+              <Route path="womenrentproduct" element={<WomenRentProductList />} />
+              <Route path="category" element={<CategoryList />} />
+              <Route path="subcategory" element={<SubCategoryList />} />
+              <Route path="adminContact" element={<AdminContact />} />
+              <Route path="editProductForm" element={<EditRentProductForm />} />
+            </Route>
           </Route>
+
 
         </Routes>
       </BrowserRouter>
