@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ShoppingCartIcon } from "@heroicons/react/outline";
+import axios from "axios";
 import menAvtar from "../assets/img/men-avatar.gif";
 import womenAvtar from "../assets/img/female.gif";
 
@@ -10,40 +11,55 @@ export default function Header() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [username, setUsername] = useState("");
 
-    // Check login state on component mount
     useEffect(() => {
         checkLoginStatus();
-        const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-        setCartCount(cartItems.length);
+        fetchCartCount();
 
         // Listen for login/logout changes
-        window.addEventListener("storage", checkLoginStatus);
+        window.addEventListener("storage", handleStorageChange);
         return () => {
-            window.removeEventListener("storage", checkLoginStatus);
+            window.removeEventListener("storage", handleStorageChange);
         };
     }, []);
 
-    // Function to check if user is logged in and get username
+    const handleStorageChange = () => {
+        checkLoginStatus();
+        fetchCartCount();
+    };
+
     const checkLoginStatus = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         if (user) {
             setIsLoggedIn(true);
-            setUsername(user.username);  // Assuming user object has a 'name' property
+            setUsername(user.username); // Make sure `username` is in user object
         } else {
             setIsLoggedIn(false);
             setUsername("");
         }
     };
 
-    // Logout function
+    const fetchCartCount = async () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user?.id) return;
+
+        try {
+            const response = await axios.get(`http://localhost:8080/cart/${user.id}`);
+            const allItems = response.data.flatMap(cart => cart.items);
+            setCartCount(allItems.length);
+        } catch (error) {
+            console.error("Failed to fetch cart count:", error);
+        }
+    };
+
     const handleLogout = () => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         alert("Logged out successfully!");
         setIsLoggedIn(false);
         setUsername("");
+        setCartCount(0);
         navigate("/");
-        window.dispatchEvent(new Event("storage")); // Notify other components of logout
+        window.dispatchEvent(new Event("storage")); // Notify other tabs/components
     };
 
     return (
@@ -130,7 +146,6 @@ export default function Header() {
                                 </li>
                             </>
                         )}
-
                     </ul>
                 </div>
             </div>

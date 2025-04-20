@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignUpForm() {
     const URL = "http://localhost:8080/User/SignUp";
@@ -56,12 +56,18 @@ export default function SignUpForm() {
                         <input type="password" name="password" placeholder="Password" value={userData.password} onChange={handleChange} className="w-full border border-black rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-500" required />
                         <input type="text" name="phone" placeholder="Phone" value={userData.phone} onChange={handleChange} className="w-full border border-black rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-500" required />
                         <input type="text" name="userType" value={userData.userType} onChange={handleChange} className="w-full border border-black rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-red-500" />
-                           
-                        
+
+
                     </div>
                     <button type="submit" className="w-full bg-red-600 text-white font-semibold py-2 rounded-md mt-6 hover:bg-red-700">
                         Sign Up
                     </button>
+                    <div className="text-right mb-4">
+                        Already have a account?
+                        <Link to="/Login" className="text-sm text-blue-600 hover:underline">
+                            Login here!
+                        </Link>
+                    </div>
                 </form>
             </div>
         </div>

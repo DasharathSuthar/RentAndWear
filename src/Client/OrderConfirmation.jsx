@@ -7,34 +7,50 @@ import axios from "axios";
 
 export default function OrderConfirmation() {
     const navigate = useNavigate();
-    const URL = "http://localhost:8080/Checkout/";
+    const URL = "http://localhost:8080/Order/";  // Assuming this is correct endpoint for fetching orders
 
     const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);  // For handling loading state
+    const [error, setError] = useState(null); // For handling errors
 
     function fetchOrders() {
+        setLoading(true);
         axios.get(URL)
             .then((response) => {
+                console.log(response.data);
+
                 if (response.status === 200) {
-                    const fetchedOrders = response.data.Order;
+                    const fetchedOrders = response.data.orders;
                     if (fetchedOrders && fetchedOrders.length > 0) {
                         setOrders(fetchedOrders);
-                        console.log(fetchedOrders);
+                    } else {
+                        setError("No confirmed orders found.");
                     }
                 }
             })
             .catch((err) => {
-                console.error(err);
-            });
+                console.error("Error fetching orders:", err);
+                setError("Failed to fetch orders. Please try again.");
+            })
+            .finally(() => setLoading(false));
     }
 
     useEffect(() => {
         fetchOrders();
     }, []);
 
-    if (!orders.length) {
+    if (loading) {
         return (
             <div className="text-center mt-10 text-white">
-                <h2 className="text-2xl font-semibold text-red-500">No confirmed orders found</h2>
+                <h2 className="text-2xl font-semibold text-red-500">Loading orders...</h2>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center mt-10 text-white">
+                <h2 className="text-2xl font-semibold text-red-500">{error}</h2>
                 <button
                     onClick={() => navigate("/")}
                     className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
@@ -66,7 +82,11 @@ export default function OrderConfirmation() {
                                     <img src={item.image} alt={item.title} className="w-20 h-20 object-cover rounded-md" />
                                     <div className="ml-4 text-left">
                                         <h3 className="text-lg font-semibold">{item.title}</h3>
-                                        <p className="text-gray-400">Price: ₹{item.price}</p>
+                                        <p className="text-gray-400">Category: {item.category}</p>
+                                        <p className="text-gray-400">Subcategory: {item.subcategory}</p>
+                                        <p className="text-gray-400">Size: {item.size}</p>
+                                        <p className="text-gray-400">Description: {item.description}</p>
+                                        <p className="text-gray-400 font-bold mt-1">Price: ₹{item.price}</p>
                                     </div>
                                 </div>
                             ))}

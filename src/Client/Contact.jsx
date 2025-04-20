@@ -78,9 +78,9 @@ export default function Contact() {
 
                             <IconCard icon={<i class="fa-solid fa-home "></i>} title={"Reach Us"} text={"A-402 ,City ,Modasa"}></IconCard>
 
-                            <IconCard icon={<i class="fa-solid fa-envelope "></i>} title={"drop a mail"} text={"support@rentandwear.com  rentandwear@gmail.com"}></IconCard>
+                            <IconCard icon={<i class="fa-solid fa-envelope "></i>} title={"Drop a Mail"} text={"support@rentandwear.com  rentandwear@gmail.com"}></IconCard>
 
-                            <IconCard icon={<i class="fa-solid fa-mobile "></i>} title={"call Us"} text={"+91 9773564912"}></IconCard>
+                            <IconCard icon={<i class="fa-solid fa-mobile "></i>} title={"Call Us"} text={"+91 9773088547"}></IconCard>
                         </div>
                     </div>
                 </div>

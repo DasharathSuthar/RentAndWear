@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import Footer from "../Components/Footer";
 import Header from "../Components/Header";
 import PageTitle from "../Components/PageTitle";
@@ -7,55 +8,83 @@ import PageTitle from "../Components/PageTitle";
 export default function SingleProduct() {
     const location = useLocation();
     const navigate = useNavigate();
-    
-    // Extract product details from location state
-    const { title, itemImg, price, category, subcategory, sizes, description, status } = location.state || {};
 
+    const { title, itemImg, price, category, subcategory, sizes, description, status } = location.state || {};
 
     const [cart, setCart] = useState([]);
     const [selectedSize, setSelectedSize] = useState(sizes ? sizes[0] : "");
 
-    // Check if user is logged in
-    const isAuthenticated = () => {
-        return localStorage.getItem("user") !== null;
-    };
+    const isAuthenticated = () => localStorage.getItem("user") !== null;
 
-    // Load cart from localStorage when the component mounts
+    // Fetch cart from backend on mount
     useEffect(() => {
-        const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-        setCart(existingCart);
+        const fetchCart = async () => {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user?.id) return;
+
+            try {
+                const res = await axios.get(`http://localhost:8080/cart/${user.id}`);
+                setCart(res.data.length > 0 ? res.data[0].items : []);
+            } catch (err) {
+                console.error("Error fetching cart:", err);
+            }
+        };
+
+        fetchCart();
     }, []);
 
-    // Function to add item to cart
-    const addToCart = () => {
+    // Function to add item to cart using Axios
+    const addToCart = async () => {
         if (!isAuthenticated()) {
-            navigate("/login"); // Redirect to login page if not logged in
+            navigate("/login");
             return;
         }
 
-        const newItem = { title, itemImg, price, category, subcategory, size: selectedSize, description, status };
-        const updatedCart = [...cart, newItem];
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = user.id; // ✅ Corrected here
 
-        setCart(updatedCart);
-        localStorage.setItem("cart", JSON.stringify(updatedCart));
-        alert("Item added to cart!");
+        const newItem = {
+            title,
+            itemImg,
+            price,
+            category,
+            subcategory,
+            size: selectedSize,
+            description,
+            status
+        };
+
+        try {
+            await axios.post("http://localhost:8080/cart/save", {
+                userId,
+                items: [newItem]
+            });
+
+            // ✅ Update local cart state
+            setCart(prev => [...prev, newItem]);
+
+            // ✅ Trigger storage event to notify Header component
+            window.dispatchEvent(new Event("storage"));
+
+            alert("Item added to cart!");
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+            alert("Failed to add item to cart.");
+        }
     };
 
-    // Function to rent now (redirects to checkout with cart + current product)
+    // Function to handle rent now
     const buyNow = () => {
         if (!isAuthenticated()) {
-            navigate("/login"); // Redirect to login page if not logged in
+            navigate("/login");
             return;
         }
 
         const newItem = { title, itemImg, price, category, subcategory, size: selectedSize, description, status };
 
-        // Check if the current product is already in the cart (same title + size)
         const isAlreadyInCart = cart.some(item => item.title === newItem.title && item.size === newItem.size);
-
         const updatedItems = isAlreadyInCart ? [...cart] : [...cart, newItem];
 
-        // Navigate to checkout with combined items
         navigate("/checkout", { state: { items: updatedItems } });
     };
 
@@ -64,10 +93,9 @@ export default function SingleProduct() {
             <Header />
             <PageTitle title={"Product Detail"} />
 
-            {/* Cart Details Section */}
             <div className="container my-4 p-4 bg-black text-white rounded-md shadow-md border border-red-500">
                 <h2 className="text-xl font-semibold text-red-500">🛒 Cart Summary</h2>
-                <p>You have <strong>{cart.length}</strong> items in your cart.</p>
+                <p>You have <strong>{cart.length}</strong> item(s) in your cart.</p>
                 {cart.length > 0 && (
                     <button
                         onClick={() => navigate("/cart")}
@@ -78,7 +106,6 @@ export default function SingleProduct() {
                 )}
             </div>
 
-            {/* Product Details Section */}
             <section className="single-product py-16 bg-gray-200 text-white">
                 <div className="container mx-auto px-4">
                     <div className="bg-gray-900 rounded-lg shadow-lg p-6 flex flex-col md:flex-row border border-red-500">
@@ -95,7 +122,6 @@ export default function SingleProduct() {
                                 <p><strong>Subcategory:</strong> {subcategory}</p>
                                 <p><strong>Description:</strong> {description}</p>
 
-                                {/* Size Selector */}
                                 <div className="mt-3">
                                     <label htmlFor="size" className="block font-semibold">Select Size:</label>
                                     <select
@@ -111,7 +137,6 @@ export default function SingleProduct() {
                                 </div>
                             </div>
 
-                            {/* Buttons for Cart & Rent Now */}
                             <div className="flex justify-start space-x-4 my-6">
                                 <button
                                     onClick={addToCart}

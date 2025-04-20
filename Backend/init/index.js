@@ -3,7 +3,7 @@ import initData from "./data.js"
 import MaleWear from "../models/MaleWear.js"
 import FemaleWear from "../models/FemaleWear.js"
 
-const MongoUrl = "mongodb://127.0.0.1:27017/Rent040425"
+const MongoUrl = "mongodb://127.0.0.1:27017/rentandwearDB"
 
 // main method connected with Db
 main().then(() => {

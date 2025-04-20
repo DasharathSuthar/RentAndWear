@@ -16,7 +16,7 @@ export default function Footer() {
                                 </Link>
                                 <div className="footer-add mt-3">
                                     <p className="mb-3 text-gray-400">A-402, Apple City, Dhunai Road, Modasa, Gujarat, India.</p>
-                                    <p className="mb-3 text-gray-400">+91 9773088789</p>
+                                    <p className="mb-3 text-gray-400">+91 9773088547</p>
                                     <p className="mb-3 text-gray-400">rentandwear@gmail.com</p>
                                 </div>
                             </div>

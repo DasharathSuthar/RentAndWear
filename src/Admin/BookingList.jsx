@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const BookingList = () => {
-  const URL = "http://localhost:8080/Checkout/";
+  const URL = "http://localhost:8080/Order/";
 
   const [orders, setOrders] = useState([]);
 
@@ -10,7 +10,7 @@ const BookingList = () => {
     axios.get(URL)
       .then((response) => {
         if (response.status === 200) {
-          const fetchedOrders = response.data.Order;
+          const fetchedOrders = response.data.orders;
           if (fetchedOrders && fetchedOrders.length > 0) {
             setOrders(fetchedOrders);
             console.log(fetchedOrders);
@@ -58,7 +58,7 @@ const BookingList = () => {
                       {product.title}
                     </td>
                     <td className="p-2">{product.size || "N/A"}</td>
-                    <td className="p-2">{order.startDate || "N/A"}</td> {/* Display Start Date */}
+                    <td className="p-2">{order.startDate || "N/A"}</td> 
                     <td className="p-2">{order.returnDate || "N/A"}</td>
                     <td className="p-2">₹{product.price}</td>
                     <td className="p-2">₹{order.totalAmount}</td>

@@ -5,10 +5,7 @@ import MemberCard from "../Components/MemberCard";
 import PageTitle from "../Components/PageTitle";
 import SectionTitle from "../Components/SectionTitle";
 import imgsb from "../assets/img/sb.png";
-import team2 from "../assets/img/team-2.jpg";
-import team4 from "../assets/img/team-4.jpg";
-import team5 from "../assets/img/team-5.jpg";
-import team6 from "../assets/img/team-6.jpg";
+import team5 from "../assets/img/team-1.jpg";
 import vec from "../assets/img/vec-2.png";
 
 export default function About() {
@@ -50,10 +47,10 @@ export default function About() {
                 <div className="container mx-auto px-4">
                     <SectionTitle title="Meet Our Team" text="Professional & Dedicated Team" />
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                        <MemberCard img={team2} name="Dasharath Suthar" role="Designer" />
-                        <MemberCard img={team4} name="Dasharath Suthar" role="Designer" />
                         <MemberCard img={team5} name="Dasharath Suthar" role="Designer" />
-                        <MemberCard img={team6} name="Dasharath Suthar" role="Designer" />
+                        <MemberCard img={team5} name="Dasharath Suthar" role="Designer" />
+                        <MemberCard img={team5} name="Dasharath Suthar" role="Designer" />
+                        <MemberCard img={team5} name="Dasharath Suthar" role="Designer" />
                     </div>
                 </div>
             </section>

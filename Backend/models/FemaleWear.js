@@ -9,6 +9,7 @@ const FemaleWearSchema = new Schema({
     subcategory: String,
     sizes: [String],
     description: String,
+    createdAt: { type: Date, default: Date.now }
 });
 
 

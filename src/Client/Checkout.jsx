@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import PageTitle from "../Components/PageTitle";
@@ -25,8 +25,8 @@ export default function Checkout() {
         returnDate: "",
         totalDays: 0,
         totalAmount: totalCartPrice,
-        deposit: 1000,
-        finalAmount: totalCartPrice - 1000
+        deposit: 500,
+        finalAmount: totalCartPrice - 500
     });
 
     // Handle Input Changes
@@ -59,9 +59,8 @@ export default function Checkout() {
     };
 
     // Handle Order Submission
-    // Handle Order Submission
     const handleSubmit = async (e) => {
-        const URL = "http://localhost:8080/Checkout/";
+        const URL = "http://localhost:8080/order/";
 
         e.preventDefault();
         if (!formData.startDate || !formData.returnDate) {
@@ -71,9 +70,10 @@ export default function Checkout() {
 
         const orderId = "ORD-" + Math.floor(Math.random() * 1000000);
         const currentDate = new Date().toISOString().split("T")[0];
+        const user = JSON.parse(localStorage.getItem("user")); // Get the user info from local storage
 
         const orderDetails = {
-            id: orderId,
+            userId: user.id, // assuming user data has an id field
             products: items.map(item => ({
                 title: item.title,
                 image: item.itemImg,
@@ -96,15 +96,17 @@ export default function Checkout() {
         };
 
         // Save to database
-        await axios.post(URL, orderDetails)
-            .then((res) => res.data)
-            .then((data) => console.log("Checkout saved:", data))
-            .catch((err) => console.error("Error saving checkout:", err));
+        try {
+            await axios.post(URL, orderDetails);
+            console.log("Checkout saved:", orderDetails);
 
-        // Redirect to order confirmation
-        navigate("/orderconfirmation", { state: orderDetails });
+            // Redirect to order confirmation page
+            navigate("/orderconfirmation", { state: orderDetails });
+        } catch (err) {
+            console.error("Error saving checkout:", err);
+            alert("Failed to process order. Please try again.");
+        }
     };
-
 
     return (
         <>

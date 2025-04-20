@@ -9,6 +9,7 @@ const MaleWearSchema = new Schema({
     subcategory: String,
     sizes: [String],  
     description: String,
+    createdAt: { type: Date, default: Date.now }
 });
 
 export default mongoose.model("MaleWear", MaleWearSchema);

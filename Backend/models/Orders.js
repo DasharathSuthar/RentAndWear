@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
-    userId: String,
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
     products: [
         {
             title: String,
@@ -19,11 +23,12 @@ const orderSchema = new Schema({
     deposit: Number,
     finalAmount: Number,
     bookingDate: String,
-    startDate: String, // Added start date
-    returnDate: String, // Added return date
+    startDate: String, 
+    returnDate: String, 
     confirm: String,
     status: String,
-    payment: String
+    payment: String,
+    createdAt: { type: Date, default: Date.now }
 });
 
 const Order = mongoose.model("Order", orderSchema);
