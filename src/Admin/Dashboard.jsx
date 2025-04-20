@@ -10,9 +10,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Fetch Bookings from /Checkout/
-    axios.get("http://localhost:8080/Checkout/")
+    axios.get("http://localhost:8080/Order/")
       .then(response => {
-        const bookings = response.data.Order;
+        const bookings = response.data.orders;
         setTotalBookings(bookings.length);
         setPendingBookings(bookings.filter(order => order.status === "Pending").length);
       })
