@@ -1,26 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PencilIcon, TrashIcon, PlusCircleIcon } from "@heroicons/react/solid";
-
-import manAvatar from "../assets/img/men-avatar.gif"
-import femaleAvatar from "../assets/img/female.gif"
+import axios from "axios";
 
 const CategoryList = () => {
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Male wear", icon: manAvatar, status: "Active" },
-    { id: 2, name: "Female wear", icon: femaleAvatar, status: "Active" },
-  ]);
+  const URL ="http://localhost:8080/categories"
 
+  const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [newCategory, setNewCategory] = useState({ id: "", name: "", icon: "", status: "Active" });
+  const [newCategory, setNewCategory] = useState({ name: "", icon: "", status: "Active" });
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(URL);
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories", error);
+    }
+  };
 
   const openModal = (category = null) => {
     setEditingCategory(category);
-    setNewCategory(category || { id: "", name: "", icon: "", status: "Active" });
+    setNewCategory(category || { name: "", icon: "", status: "Active" });
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {  
+  const closeModal = () => {
     setIsModalOpen(false);
     setEditingCategory(null);
   };
@@ -29,29 +38,41 @@ const CategoryList = () => {
     setNewCategory({ ...newCategory, [e.target.name]: e.target.value });
   };
 
-  const saveCategory = () => {
-    if (editingCategory) {
-      setCategories(categories.map(cat => (cat.id === editingCategory.id ? newCategory : cat)));
-    } else {
-      setNewCategory({ ...newCategory, id: categories.length + 1 });
-      setCategories([...categories, { ...newCategory, id: categories.length + 1 }]);
+  const saveCategory = async () => {
+    try {
+      if (editingCategory) {
+        const response = await axios.put(`${URL}/${editingCategory._id}`, newCategory);
+        setCategories(categories.map(cat => cat._id === editingCategory._id ? response.data : cat));
+      } else {
+        const response = await axios.post(`${URL}`, newCategory);
+        setCategories([...categories, response.data]);
+      }
+      closeModal();
+    } catch (error) {
+      console.error("Failed to save category:", error);
     }
-    closeModal();
   };
 
-  const deleteCategory = (id) => {
-    setCategories(categories.filter(cat => cat.id !== id));
+  const deleteCategory = async (id) => {
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      try {
+        await axios.delete(`${URL}/${id}`);
+        setCategories(categories.filter(cat => cat._id !== id));
+      } catch (error) {
+        console.error("Failed to delete category:", error);
+      }
+    }
   };
 
   return (
-    <div className="p-6 bg-gray-100 h-screen">
+    <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Category List</h1>
         <button onClick={() => openModal()} className="flex items-center bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">
           <PlusCircleIcon className="w-5 h-5 mr-2" /> Add
         </button>
       </div>
-      
+
       <div className="overflow-x-auto bg-white shadow-md rounded-lg p-4">
         <table className="w-full border-collapse">
           <thead>
@@ -65,9 +86,9 @@ const CategoryList = () => {
             </tr>
           </thead>
           <tbody>
-            {categories.map((category) => (
-              <tr key={category.id} className="border-t text-center">
-                <td className="p-2">{category.id}</td>
+            {categories.map((category,index) => (
+              <tr key={index} className="border-t text-left">
+                <td className="p-2">{index + 1}</td>
                 <td className="p-2">{category.name}</td>
                 <td className="p-2 text-2xl"><img src={category.icon} alt="icon" className="size-20" /></td>
                 <td className="p-2 text-green-500">{category.status}</td>
@@ -77,7 +98,7 @@ const CategoryList = () => {
                   </button>
                 </td>
                 <td className="p-2">
-                  <button onClick={() => deleteCategory(category.id)} className="p-2 bg-red-500 text-white rounded">
+                  <button onClick={() => deleteCategory(category._id)} className="p-2 bg-red-500 text-white rounded">
                     <TrashIcon className="w-5 h-5" />
                   </button>
                 </td>
@@ -93,7 +114,7 @@ const CategoryList = () => {
             <h2 className="text-xl font-semibold mb-4">{editingCategory ? "Edit Category" : "Add Category"}</h2>
             <div className="space-y-2">
               <input type="text" name="name" placeholder="Category Name" value={newCategory.name} onChange={handleChange} className="w-full p-2 border rounded" />
-              <input type="text" name="icon" placeholder="Icon (Emoji)" value={newCategory.icon} onChange={handleChange} className="w-full p-2 border rounded" />
+              <input type="text" name="icon" placeholder="Image URL" value={newCategory.icon} onChange={handleChange} className="w-full p-2 border rounded" />
             </div>
             <div className="flex justify-end space-x-2 mt-4">
               <button onClick={closeModal} className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">Cancel</button>

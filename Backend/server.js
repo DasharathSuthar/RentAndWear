@@ -6,10 +6,11 @@ import UserRoute from "./routes/UserRoute.js"
 import ContactRoute from './routes/ContactRoute.js'
 import OrderRoute from './routes/OrderRoute.js'
 import CartRoute from './routes/CartRoute.js'
+import CategoryRoute from './routes/CategoryRoute.js'
+import SubCategoryRoute from './routes/SubCategoryRoute.js'
 import bodyParser from "body-parser";
 import cors from "cors"
 const app = express()
-
 
 app.use(express.urlencoded({extended:false}))
 app.use(bodyParser.json())
@@ -21,6 +22,8 @@ app.use("/User",UserRoute);
 app.use("/Contact",ContactRoute);
 app.use("/Order",OrderRoute);
 app.use("/Cart",CartRoute);
+app.use("/categories",CategoryRoute)
+app.use("/subcategories",SubCategoryRoute)
 
 const MongoUrl = "mongodb://127.0.0.1:27017/rentandwearDB"
 
