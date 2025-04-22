@@ -101,7 +101,7 @@ export default function Checkout() {
             console.log("Checkout saved:", orderDetails);
 
             // Redirect to order confirmation page
-            navigate("/orderconfirmation", { state: orderDetails });
+            navigate("/ConfirmationTick", { state: orderDetails });
         } catch (err) {
             console.error("Error saving checkout:", err);
             alert("Failed to process order. Please try again.");

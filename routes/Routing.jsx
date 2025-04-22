@@ -23,6 +23,7 @@ import SubCategoryList from '../src/Admin/SubCategory'
 import AdminContact from '../src/Admin/AdminContact'
 import EditRentProductForm from '../src/Admin/EditRentProductForm'
 import BookingList from '../src/Admin/BookingList'
+import Confirmation from '../src/Client/ConfirmPage'
 
 const Routing = () => {
   return (
@@ -37,6 +38,7 @@ const Routing = () => {
           <Route path='/FemaleWear' element={<FemaleWear></FemaleWear>}></Route>
           <Route path='/Cart' element={<Cart></Cart>}></Route>
           <Route path='/Checkout' element={<Checkout></Checkout>}></Route>
+          <Route path='/ConfirmationTick' element={<Confirmation></Confirmation>}></Route>
           <Route path="/orderconfirmation" element={<OrderConfirmation />} />
           <Route path='/SignUpForm' element={<SignUpForm></SignUpForm>}></Route>
           <Route path='/Login' element={<Login></Login>}></Route>

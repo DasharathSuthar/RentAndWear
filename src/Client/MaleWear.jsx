@@ -26,7 +26,7 @@ export default function MaleWear() {
     }
 
     useEffect(() => {
-        MaleWearData();  // Fetch Male Wear data on component mount
+        MaleWearData();  
     }, []);
 
     return (
