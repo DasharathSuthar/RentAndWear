@@ -9,7 +9,7 @@ const Dashboard = () => {
   const [totalProducts, setTotalProducts] = useState(0);
 
   useEffect(() => {
-    // Fetch Bookings from /Checkout/
+   
     axios.get("http://localhost:8080/Order/")
       .then(response => {
         const bookings = response.data.orders;
@@ -18,12 +18,10 @@ const Dashboard = () => {
       })
       .catch(err => console.error("Error fetching bookings: ", err));
 
-    // Fetch MaleWear products
     axios.get("http://localhost:8080/MaleWear/")
       .then(response => {
         const maleWearCount = response.data.List.length;
 
-        // Fetch FemaleWear products after MaleWear
         axios.get("http://localhost:8080/FemaleWear/")
           .then(femaleResponse => {
             const femaleWearCount = femaleResponse.data.List.length;
