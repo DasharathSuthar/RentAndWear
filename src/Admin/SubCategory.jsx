@@ -80,7 +80,7 @@ export default function SubCategoryList() {
             placeholder="Enter subcategory name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            required
+            required  
             className="border p-2 rounded flex-1 min-w-[200px]"
           />
 

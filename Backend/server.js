@@ -1,3 +1,6 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 import express from "express"
 import mongoose from "mongoose";
 import MaleWearRoute from "./routes/MaleWearRoute.js"
@@ -12,32 +15,32 @@ import bodyParser from "body-parser";
 import cors from "cors"
 const app = express()
 
-app.use(express.urlencoded({extended:false}))
+app.use(express.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
 
-app.use("/MaleWear",MaleWearRoute);
-app.use("/FemaleWear",FemaleWearRoute);
-app.use("/User",UserRoute);
-app.use("/Contact",ContactRoute);
-app.use("/Order",OrderRoute);
-app.use("/Cart",CartRoute);
-app.use("/categories",CategoryRoute)
-app.use("/subcategories",SubCategoryRoute)
+app.use("/MaleWear", MaleWearRoute);
+app.use("/FemaleWear", FemaleWearRoute);
+app.use("/User", UserRoute);
+app.use("/Contact", ContactRoute);
+app.use("/Order", OrderRoute);
+app.use("/Cart", CartRoute);
+app.use("/categories", CategoryRoute)
+app.use("/subcategories", SubCategoryRoute)
 
-const MongoUrl = "mongodb://127.0.0.1:27017/rentandwearDB"
+const MongoUrl = process.env.DATABASE_URL;
+const PORT = process.env.PORT || 8080
 
-async function main() {
-    await mongoose.connect(MongoUrl);
+if (!MongoUrl) {
+    console.error("DATABASE_URL not set!");
+    process.exit(1);
 }
-// main method connected with Db
-main().then(() => {
-    console.log("connected succsessfuly");
-}).catch(err => console.log(err))
+
+mongoose.connect(MongoUrl)
+    .then(() => console.log("MongoDB connected"))
+    .catch(err => console.error("MongoDB error:", err));
 
 
-app.listen(8080,()=> {
-    console.log("Server Connected");
-    console.log("http://localhost:8080/");
-    
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
 })
